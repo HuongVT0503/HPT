@@ -118,3 +118,70 @@ Khi Client nhận xong kết quả và đóng kết nối, các hàng đợi t�
 
 3. Phân tích ảnh hưởng của các thông số QoS lên dịch vụ 
 truyền dòng video
+
+Câu	hoi	9:	Địa	chỉ	IP	của	2	máy	là	gì?	Làm	sao	để	ping	nhau?	
+Server: 192.168.56.101
+
+Client: 192.168.56.102
+
+Từ máy Server:
+ping 192.168.56.102
+Từ máy Client:
+ping 192.168.56.101
+
+Câu	hỏi	10:	Bạn	đã	xem	được	video	trên	máy	client	chưa?	Đánh	giá	chất	lượng	
+video	mà	bạn	xem	trên	máy	client.
+
+em da xem duoc video 
+Video chạy mượt, không giật hình.
+Độ trễ vài giây khi bắt đầu phát.
+
+Câu	hỏi	11:	Kết	quả	nhận	được	sau	lệnh	ping	là	gì?	Bạn	có	thấy	độ	trễ	đã	tăng	
+100ms	không?
+Thời gian phản hồi tăng thêm ~100ms so với trước.time=105 ms
+
+Câu	hỏi	12:	Hãy	tắt	chức	năng	sử	dụng	bộ	đệm	ở	máy	Client.	Sau	đó	hãy	đánh	giá	
+chất	lượng	của	video	nhận	được	ở	máy	Client.	Bạn	kết	luận	thế	nào	về	ảnh	hưởng	
+của	delay	với	dịch	vụ	truyền	dòng	video?	
+
+Video bị giật, đứng hình hoặc ngắt quãng.
+Delay cao làm stream video theo thời gian thực giảm chất lượng rõ rệt.
+->Delay lớn làm giảm QoS nghiêm trọng đối với dịch vụ streaming.
+
+Câu	hỏi	13:	Cũng	như	câu	hỏi	7,	hãy	quan	sát	video	ở	Client	và	đưa	ra	đánh	giá	và	
+kết	luận	về	ảnh	hưởng	của	độ	biến	đổi	delay	lên	chất	lượng	dịch	vụ	truyền	video.
+
+Video giật nhẹ, đôi khi trễ hoặc đứng khung hình ngắn.
+Âm thanh và hình không đồng bộ->Biến thiên độ trễ (jitter) làm video thiếu ổn định, gây ảnh hưởng rõ rệt tới trải nghiệm người dùng.
+
+Câu	hỏi	14:	Hãy	xem	video	ở	client	và	đánh	giá	về	độ	ảnh	hưởng	của	packet	loss	
+lên	chất	lượng	dịch	vụ	truyền	video.	Thử	tăng	giá	trị	của	tỷ	lệ	mất	gói	tin	lên	để	
+thấy	độ	ảnh	hưởng	rõ	nét	hơn.	
+
+Video xuất hiện khung hình bị lỗi (mosaic), tiếng rè.
+Khi tăng loss lên 1%–3%, video gần như không xem được.
+->Mất gói ảnh hưởng nghiêm trọng đến chất lượng video; càng mất nhiều, độ ổn định càng giảm.
+
+Câu	hỏi	15:	Hãy	xem	video	ở	client	và	đánh	giá	về	độ	ảnh	hưởng	của	việc	biến	đổi	
+packet	loss	lên	chất	lượng	dịch	vụ	truyền	video.	Thử	tăng	giá	trị	của	tỷ	lệ	mất	gói	
+tin	lên	để	thấy	độ	ảnh	hưởng	rõ	nét	hơn.
+
+Video bị “rớt khung” không đều, đôi khi dừng vài giây.
+Do tương quan 25%, lỗi xảy ra theo chuỗi → giảm ngẫu nhiên nhưng gây lag mạnh.
+->Sự biến đổi có tương quan gây ảnh hưởng khó lường, giảm tính mượt mà của stream.
+
+
+Câu	hỏi	16:	Hãy	xem	video	ở	client	và	đánh	giá	về	độ	ảnh	hưởng	của	việc	lặp	gói	
+tin	lên	chất	lượng	dịch	vụ	truyền	video.	Thử	tăng	giá	trị	của	tỷ	lệ	lặp	gói	tin	lên	để	
+thấy	độ	ảnh	hưởng	rõ	nét	hơn.	
+
+Ở mức thấp (<1%), khó nhận thấy.
+Khi tăng 5–10%, video bị trễ, âm thanh lặp, méo.
+-> Lặp gói làm tăng tải và gây mất đồng bộ thời gian trong truyền thông đa phương tiện.
+
+Câu	hỏi	17:	Hãy	xem	video	ở	client	và	đánh	giá	về	độ	ảnh	hưởng	của	việc	đảo	thứ	
+tự	gói	tin	lên	chất	lượng	dịch	vụ	truyền	video.
+
+Hình bị giật, tiếng lệch, đôi khi dừng phát rồi tiếp tục.
+->Đảo thứ tự gói gây lỗi giải mã video, giảm mạnh chất lượng và độ mượt của streaming.
+
