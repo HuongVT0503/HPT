@@ -1,0 +1,120 @@
+BÀI	THỰC	HÀNH	
+MÔN	HỌC:	HỆ	PHÂN	TÁN	
+CHƯƠNG	2:	Tiến	trình	và	Luồng	trong	HPT
+
+
+
+1. Xây dựng một Chat room sử dụng socket.io
+
+
+Câu	hỏi	1:	Tệp	nào	vừa	xuất	hiện	trong	thư	mục	ChatRoomApp?	Nó	được	sử	dụng	
+để	làm	gì?	
+BÀI TH?C HÀNH 
+MÔN H?C: H? PHÂN TÁN 
+CH??NG 2: Ti?n trình và Lu?ng trong HPT 
+
+
+1. Xây d?ng m?t Chat room s? d?ng socket.io
+
+Câu h?i 1: T?p nào v?a xu?t hi?n trong th? m?c ChatRoomApp? Nó ???c s? d?ng ?? làm gì? 
+T?p v?a xu?t hi?n trong th? m?c ChatRoomApp là package.json. Nó ???c dùng ?? ??nh ngh?a config/ c?u hình cho ?ng d?ng Node.js
+
+
+
+Câu h?i 2: M? trình duy?t và gõ vào ?ó ??a ch? http://localhost:3000, b?n s? nh?n ???c thông ?i?p gì? 
+
+M? trình duy?t và gõ vào ?ó ??a ch? http://localhost:3000, s? nh?n ???c thông ?i?p: Hello world 
+
+
+
+Câu h?i 3: B?n hãy th? reload (Ctrl-R) l?i trình duy?t. B?n có nhìn th?y gì m?i xu?t hi?n trên c?a s? không? N?u không có gì xu?t hi?n h?t thì là vì sao? 
+Em ?ã th? reload (Ctrl-R) l?i trình duy?t, không th?y gì m?i xu?t hi?n trên c?a s?. 
+Lí do là phía client ch?a kh?i t?o k?t n?i Socket.IO (ch?a nhúng script socket.io và ch?a g?i io.connect(...)), nên s? ki?n io.on('connection', ...) ? server không ???c kích ho?t. 
+H?n n?a nh?ng dòng: 
+app.get('/', (req, res) => { 
+res.send('Hello world') 
+}) 
+khi?n cho k?t qu? tr? v? luôn là dòng Hello world.
+
+
+Câu h?i 4: Refresh trang localhost:3000, b?n nhìn th?y thông ?i?p nào? 
+
+Khi em refresh trang localhost:3000, trình duy?t hi?n th? giao di?n chat room, còn c?a s? console xu?t hi?n dòng thông báo: New user connected
+
+
+Câu	hỏi	5:	Bây	giờ	bạn	hãy	thử	gõ	gì	đó	lên	một	tab.	Cùng	lúc	đó,	nhìn	sang	tab	
+khác	của	người	dùng	khác,	bạn	thấy	gì?
+
+Khi em gõ lên 1 tab thì ? tab c?a ng??i dùng khác hi?n: <username> “  is typing a message...”
+
+
+
+
+
+
+2. Phát triển hệ thống RPC sử dụng RabbitMQ 
+
+Câu	hỏi	6:	Đâu	là	đoạn	code	mà	Server	gán	correlationID	vào	câu	trả	lời?	
+
+AMQP.BasicProperties replyProps = new AMQP.BasicProperties 
+                        .Builder() 
+                        .correlationId(delivery.getProperties().getCorrelationId()) 
+                        .build(); 
+
+Laf phần tạo đối tượng AMQP.BasicProperties trong callback khi xử lý yêu cầu.
+Server nhận message, đọc correlationId từ delivery.getProperties(), rồi gán giá trị đó vào replyProps trước khi gửi phản hồi.
+
+
+
+Câu	hỏi	7:	Dựa	vào	cả	code	của	Client	và	Server	để	giải	thích	đâu	là	đoạn	code	mà	
+Client	gửi	yêu	cầu	lên	cho	Server	thông	qua	hàng	đợi	rpc_queue	và	tạo	ra	một	
+hàng	đợi	mới	để	chờ	câu	trả	lời	của	server
+
+String replyQueueName = channel.queueDeclare().getQueue();
+        AMQP.BasicProperties props = new AMQP.BasicProperties.Builder()
+                .correlationId(corrId)
+                .replyTo(replyQueueName)
+                .build();
+        channel.basicPublish("", requestQueueName, props, message.getBytes("UTF-8"));
+
+Khi Client gọi queueDeclare() mà không chỉ định tên, RabbitMQ sẽ tạo ra một hàng đợi tạm thời (tự động đặt tên, tự hủy khi ngắt kết nối).
+Hàng đợi này sẽ được dùng để nhận phản hồi từ Server.
+
+requestQueueName = "rpc_queue" là hàng đợi nơi Server đang lắng nghe.
+Client gửi yêu cầu cùng với các thuộc tính (đã chứa correlationId và replyTo).
+
+
+Câu	hỏi	8:	Bây	giờ	hãy	thử	thêm	một	chút	delay	vào	chương	trình	Server	bằng	
+cách	thêm	vào	đoạn	code	sau	ở	dưới	dòng:	response += fib(n);	
+try { 
+Thread.sleep(2000); 
+} catch (InterruptedException _ignored) { 
+Thread.currentThread().interrupt(); 
+} 
+Chương	trình	Server	sẽ	ngủ	2s	đối	với	mỗi	request.	Hãy	dịch	lại	chương	trình	
+Server	và	chạy	nó.		
+Mở	cùng	lúc	nhiều	cửa	sổ	command	và	chạy	nhiều	chương	trình	Client	trên	đó	
+cùng	lúc.	
+Cùng	lúc	đó	mở	một	cửa	sổ	command	khác	và	chạy	dòng	lệnh	sau:	
+>rabbitmqctl.bat list_queues name messages_ready messages_unacknowledged 
+Bạn	nhận	được	kết	quả	hiển	thị	gì?	Giải	thích!
+
+name        messages_ready  messages_unacknowledged
+rpc_queue   4               1
+Trong đó: 
+messages_ready là số message đã được gửi lên rpc_queue nhưng chưa được Server lấy ra.
+Nhiều Client chạy đồng thời → rất nhiều yêu cầu xếp hàng chờ vì Server xử lý chậm.
+
+messages_unacknowledged là số message đã được Server nhận (delivered) nhưng chưa ack.
+Do Server chỉ xử lý từng message một (prefetch=1) và chỉ basicAck sau khi tính fib(n) + sleep(2000), nên luôn có đúng 1 message ở trạng thái “unacked” trong lúc Server đang ngủ 2s.
+
+ngoafi ra cos các hàng đợi reply tạm (tên ngẫu nhiên) mà Client tạo ra:
+Thường có messages_ready rất nhỏ hoặc 0.
+Khi Client nhận xong kết quả và đóng kết nối, các hàng đợi tạm này sẽ biến mất.
+
+-> Lệnh list_queues phản ánh đúng hiện tượng “tắc nghẽn”: hàng đợi có nhiều message pending và một message đang được xử lý dở.
+
+
+
+3. Phân tích ảnh hưởng của các thông số QoS lên dịch vụ 
+truyền dòng video
